@@ -11,7 +11,6 @@ import javafx.scene.image.*;
 import javafx.scene.Scene;
 import javafx.scene.text.Font;
 
-
 //Class must extend Application class
 public class Main extends Application
 {
@@ -154,5 +153,19 @@ public class Main extends Application
         primaryStage.getIcons().add(new Image("assets/icon.jpg"));
         primaryStage.setScene(menu);
         primaryStage.show();
+
+        primaryStage.setOnCloseRequest(e ->
+        {
+            e.consume();
+            Scene currentScene = primaryStage.getScene();
+            if (currentScene.equals(menu))
+            {
+                AlertBox.display("menu", primaryStage, menu);
+            }
+            else if (currentScene.equals(board))
+            {
+                AlertBox.display("board", primaryStage, menu);
+            }
+        });
     }
 }
