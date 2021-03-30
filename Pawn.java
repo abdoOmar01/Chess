@@ -1,76 +1,83 @@
-import javafx.scene.layout.GridPane;
-
 public class Pawn extends Piece
 {
-    private boolean isFirstMove;
-
     public Pawn(int x, int y, String color, Board board)
     {
         super(x, y, color, board);
-        isFirstMove = true;
-    }
-
-    @Override
-    public void setMovableTiles()
-    {
-        if (movableTiles != null)
-        {
-            movableTiles.clear();
-        }
+        setType("Pawn");
 
         if (color.equals("White"))
         {
-            if (x >= 1)
+            setImageView("assets/w_pawn_png_128px.png");
+        }
+        else
+        {
+            setImageView("assets/b_pawn_png_128px.png");
+        }
+
+    }
+
+    //Pawn has a maximum of four possible moves: One tile ahead, Two tiles ahead if it's the first move,
+    //right and left diagonals if there's a piece of the opposite color
+
+    @Override
+    public void toggleMovableTiles()
+    {
+        //Check for color
+        if (getColor().equals("White"))
+        {
+            if (getFirstMove() && getBoard().getTile(getX() - 2, getY()).getPiece() == null)
             {
-                if (board.grid[x - 1][y].getPiece() == null)
-                {
-                    movableTiles.add(board.grid[x - 1][y]);
+                getBoard().getTile(getX() - 2, getY()).toggle();
+                getBoard().getTile(getX() - 2, getY()).setMovablePiece(this);
+            }
 
-                    if (isFirstMove && board.grid[x - 2][y].getPiece() == null)
-                    {
-                        movableTiles.add(board.grid[x - 2][y]);
-                    }
-                }
+            if (getX() > 0 && getBoard().getTile(getX() - 1, getY()).getPiece() == null)
+            {
+                getBoard().getTile(getX() - 1, getY()).toggle();
+                getBoard().getTile(getX() - 1, getY()).setMovablePiece(this);
+            }
 
-                if (y <= 6 && board.grid[x - 1][y + 1].getPiece() != null &&
-                        board.grid[x - 1][y + 1].getPiece().color.equals("Black"))
-                {
-                    movableTiles.add(board.grid[x - 1][y + 1]);
-                }
+            if (getX() > 0 && getY() < 7 && getBoard().getTile(getX() - 1, getY() + 1).getPiece() != null &&
+                    getBoard().getTile(getX() - 1, getY() + 1).getPiece().getColor().equals("Black"))
+            {
+                getBoard().getTile(getX() - 1, getY() + 1).toggle();
+                getBoard().getTile(getX() - 1, getY() + 1).setMovablePiece(this);
+            }
 
-                if (y >= 1 && board.grid[x - 1][y - 1].getPiece() != null &&
-                        board.grid[x - 1][y - 1].getPiece().color.equals("Black"))
-                {
-                    movableTiles.add(board.grid[x - 1][y + 1]);
-                }
+            if (getX() > 0 && getY() > 0 && getBoard().getTile(getX() - 1, getY() - 1).getPiece() != null &&
+                    getBoard().getTile(getX() - 1, getY() - 1).getPiece().getColor().equals("Black"))
+            {
+                getBoard().getTile(getX() - 1, getY() - 1).toggle();
+                getBoard().getTile(getX() - 1, getY() - 1).setMovablePiece(this);
             }
         }
 
         else
         {
-            if (x <= 6)
+            if (getFirstMove() && getBoard().getTile(getX() + 2, getY()).getPiece() == null)
             {
-                if (board.grid[x + 1][y].getPiece() == null)
-                {
-                    movableTiles.add(board.grid[x + 1][y]);
+                getBoard().getTile(getX() + 2, getY()).toggle();
+                getBoard().getTile(getX() + 2, getY()).setMovablePiece(this);
+            }
 
-                    if (isFirstMove && board.grid[x + 2][y].getPiece() == null)
-                    {
-                        movableTiles.add(board.grid[x + 2][y]);
-                    }
-                }
+            if (getX() < 7 && getBoard().getTile(getX() + 1, getY()).getPiece() == null)
+            {
+                getBoard().getTile(getX() + 1, getY()).toggle();
+                getBoard().getTile(getX() + 1, getY()).setMovablePiece(this);
+            }
 
-                if (y <= 6 && board.grid[x + 1][y + 1].getPiece() != null &&
-                        board.grid[x + 1][y + 1].getPiece().color.equals("White"))
-                {
-                    movableTiles.add(board.grid[x + 1][y + 1]);
-                }
+            if (getX() < 7 && getY() < 7 && getBoard().getTile(getX() + 1, getY() + 1).getPiece() != null &&
+                    getBoard().getTile(getX() + 1, getY() + 1).getPiece().getColor().equals("White"))
+            {
+                getBoard().getTile(getX() + 1, getY() + 1).toggle();
+                getBoard().getTile(getX() + 1, getY() + 1).setMovablePiece(this);
+            }
 
-                if (y >= 1 && board.grid[x + 1][y - 1].getPiece() != null &&
-                        board.grid[x + 1][y - 1].getPiece().color.equals("White"))
-                {
-                    movableTiles.add(board.grid[x + 1][y - 1]);
-                }
+            if (getX() < 7 && getY() > 0 && getBoard().getTile(getX() + 1, getY() - 1).getPiece() != null &&
+                    getBoard().getTile(getX() + 1, getY() - 1).getPiece().getColor().equals("White"))
+            {
+                getBoard().getTile(getX() + 1, getY() - 1).toggle();
+                getBoard().getTile(getX() + 1, getY() - 1).setMovablePiece(this);
             }
         }
     }

@@ -1,72 +1,153 @@
-import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.scene.control.Label;
-import javafx.scene.control.Button;
-import javafx.scene.text.Font;
-import javafx.scene.layout.StackPane;
-import javafx.scene.image.Image;
 
 public class AlertBox
 {
-    public static void display(String scene, Stage primaryStage, Scene menu)
+    public static void display(int x, int y, String color, Board board)
     {
         Stage alert = new Stage();
-        Label message = new Label();
-        Button button1 = new Button();
-        Button button2 = new Button();
-        StackPane alertLayout = new StackPane();
-
-        message.setFont(new Font("Diablo Heavy", 16));
-        button1.setFont(new Font("Diablo Heavy", 14));
-        button2.setFont(new Font("Diablo Heavy", 14));
-
+        GridPane layout = new GridPane();
+        layout.setAlignment(Pos.CENTER);
         alert.initModality(Modality.APPLICATION_MODAL);
-        alert.setTitle("Confirmation");
-        alert.setWidth(500);
-        alert.setHeight(150);
+        alert.setTitle("Promotion");
+        alert.setWidth(400);
+        alert.setHeight(100);
 
-        if (scene.equals("menu"))
+        Button bishopButton = new Button();
+        Button rookButton = new Button();
+        Button knightButton = new Button();
+        Button queenButton = new Button();
+
+        ImageView bishopImage = new ImageView();
+        ImageView rookImage = new ImageView();
+        ImageView knightImage = new ImageView();
+        ImageView queenImage = new ImageView();
+
+        bishopImage.setFitWidth(40);
+        bishopImage.setPreserveRatio(true);
+        rookImage.setFitWidth(40);
+        rookImage.setPreserveRatio(true);
+        knightImage.setFitWidth(40);
+        knightImage.setPreserveRatio(true);
+        queenImage.setFitWidth(40);
+        queenImage.setPreserveRatio(true);
+
+        if (color.equals("White"))
         {
-            message.setText("Are you sure you want to exit?");
-            button1.setText("Yes");
-            button2.setText("No");
+            alert.getIcons().add(new Image("assets/w_pawn_png_128px.png"));
 
-            StackPane.setMargin(message, new Insets(0, 0, 60, 0));
-            StackPane.setMargin(button1, new Insets(0, 90, 0, 0));
-            StackPane.setMargin(button2, new Insets(0, 0, 0, 80));
+            bishopImage.setImage(new Image("assets/w_bishop_png_128px.png"));
+            rookImage.setImage(new Image("assets/w_rook_png_128px.png"));
+            knightImage.setImage(new Image("assets/w_knight_png_128px.png"));
+            queenImage.setImage(new Image("assets/w_queen_png_128px.png"));
 
-            button1.setOnAction(e ->
+            bishopButton.setGraphic(bishopImage);
+            rookButton.setGraphic(rookImage);
+            knightButton.setGraphic(knightImage);
+            queenButton.setGraphic(queenImage);
+
+            bishopButton.setOnAction(e ->
             {
+                board.getTile(x, y).getPiece().getImageView().setImage(null);
+                Piece newPiece = new Bishop(x, y, "White", board);
+                board.getTile(x, y).setPiece(newPiece);
+                board.getLayout().add(newPiece.getImageView(), y, x);
                 alert.close();
-                primaryStage.close();
             });
-            button2.setOnAction(e -> alert.close());
+
+            rookButton.setOnAction(e ->
+            {
+                board.getTile(x, y).getPiece().getImageView().setImage(null);
+                Piece newPiece = new Rook(x, y, "White", board);
+                board.getTile(x, y).setPiece(newPiece);
+                board.getLayout().add(newPiece.getImageView(), y, x);
+                alert.close();
+            });
+
+            knightButton.setOnAction(e ->
+            {
+                board.getTile(x, y).getPiece().getImageView().setImage(null);
+                Piece newPiece = new Knight(x, y, "White", board);
+                board.getTile(x, y).setPiece(newPiece);
+                board.getLayout().add(newPiece.getImageView(), y, x);
+                alert.close();
+            });
+
+            queenButton.setOnAction(e ->
+            {
+                board.getTile(x, y).getPiece().getImageView().setImage(null);
+                Piece newPiece = new Queen(x, y, "White", board);
+                board.getTile(x, y).setPiece(newPiece);
+                board.getLayout().add(newPiece.getImageView(), y, x);
+                alert.close();
+            });
         }
-        else if (scene.equals("board"))
+
+        else
         {
-            message.setText("Are you sure you want to exit the match?");
-            button1.setText("Resume Match");
-            button2.setText("Return to Menu");
+            alert.getIcons().add(new Image("assets/b_pawn_png_128px.png"));
 
-            StackPane.setMargin(message, new Insets(0, 0, 60, 0));
-            StackPane.setMargin(button1, new Insets(0, 180, 0, 0));
-            StackPane.setMargin(button2, new Insets(0, 0, 0, 160));
+            bishopImage.setImage(new Image("assets/b_bishop_png_128px.png"));
+            rookImage.setImage(new Image("assets/b_rook_png_128px.png"));
+            knightImage.setImage(new Image("assets/b_knight_png_128px.png"));
+            queenImage.setImage(new Image("assets/b_queen_png_128px.png"));
 
-            button1.setOnAction(e -> alert.close());
-            button2.setOnAction(e ->
+            bishopButton.setGraphic(bishopImage);
+            rookButton.setGraphic(rookImage);
+            knightButton.setGraphic(knightImage);
+            queenButton.setGraphic(queenImage);
+
+            bishopButton.setOnAction(e ->
             {
+                board.getTile(x, y).getPiece().getImageView().setImage(null);
+                Piece newPiece = new Bishop(x, y, "Black", board);
+                board.getTile(x, y).setPiece(newPiece);
+                board.getLayout().add(newPiece.getImageView(), y, x);
                 alert.close();
-                primaryStage.setScene(menu);
+            });
+
+            rookButton.setOnAction(e ->
+            {
+                board.getTile(x, y).getPiece().getImageView().setImage(null);
+                Piece newPiece = new Rook(x, y, "Black", board);
+                board.getTile(x, y).setPiece(newPiece);
+                board.getLayout().add(newPiece.getImageView(), y, x);
+                alert.close();
+            });
+
+            knightButton.setOnAction(e ->
+            {
+                board.getTile(x, y).getPiece().getImageView().setImage(null);
+                Piece newPiece = new Knight(x, y, "Black", board);
+                board.getTile(x, y).setPiece(newPiece);
+                board.getLayout().add(newPiece.getImageView(), y, x);
+                alert.close();
+            });
+
+            queenButton.setOnAction(e ->
+            {
+                board.getTile(x, y).getPiece().getImageView().setImage(null);
+                Piece newPiece = new Queen(x, y, "Black", board);
+                board.getTile(x, y).setPiece(newPiece);
+                board.getLayout().add(newPiece.getImageView(), y, x);
+                alert.close();
             });
         }
 
-        alertLayout.getChildren().addAll(message, button1, button2);
+        layout.add(bishopButton, 100, 50);
+        layout.add(rookButton, 200, 50);
+        layout.add(knightButton, 300, 50);
+        layout.add(queenButton, 400, 50);
 
-        Scene alertScene = new Scene(alertLayout);
-        alert.getIcons().add(new Image("assets/icon.jpg"));
+        Scene alertScene = new Scene(layout);
         alert.setScene(alertScene);
-        alert.showAndWait();
+
+        alert.show();
     }
 }

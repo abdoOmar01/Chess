@@ -1,99 +1,81 @@
 import javafx.application.Application;
-import javafx.geometry.Pos;
 import javafx.geometry.Insets;
-import javafx.scene.control.Tooltip;
-import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.control.Button;
-import javafx.stage.Stage;
-import javafx.scene.image.*;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
-//Class must extend Application class
 public class Main extends Application
 {
     public static void main(String[] args)
     {
-        //The starting method
         launch(args);
     }
 
+    @Override
     public void start(Stage primaryStage)
     {
-        //Each image must have its corresponding view to display it
-        Image logo;
-        ImageView logoView;
+        VBox menuLayout = new VBox();
+        GridPane boardLayout = new GridPane();
 
-        //Layout for the chess board
-        GridPane gridLayout = new GridPane();
+        Scene menu = new Scene(menuLayout);
+        menuLayout.setAlignment(Pos.TOP_CENTER);
+        menuLayout.setPadding(new Insets(15, 0, 0, 0));
 
-        //Scene for the chess board
-        Scene board = new Scene(gridLayout, 400, 380);
+        Label chessLabel = new Label();
+        chessLabel.setText("Chess");
+        chessLabel.setTextFill(Color.BLACK);
+        chessLabel.setFont(new Font("Times New Roman", 30));
+        VBox.setMargin(chessLabel, new Insets(0, 0, 15, 0));
 
-        //Sets the label for the main menu above the logo
-        //and then sets the font to be "Diablo Heavy"
-        //Font my not be displayed properly if it's not installed
-        Label chess = new Label();
-        chess.setText("Chess");
-        chess.setFont(new Font("Diablo Heavy", 30));
-        StackPane.setMargin(chess, new Insets(0, 10, 300, 0));
+        ImageView logo = new ImageView(new Image("assets/b_knight_png_1024px.png"));
+        logo.setFitWidth(228.75);
+        logo.setPreserveRatio(true);
 
-        //The logo for the menu
-        logo = new Image("assets/icon.png");
-        logoView = new ImageView(logo);
-        logoView.setFitWidth(290);
-        logoView.setFitHeight(193);
-        StackPane.setMargin(logoView, new Insets(0 ,0 ,100 ,0));
+        Button startButton = new Button("Start Game");
+        startButton.setFont(new Font("Times New Roman", 16));
+        startButton.setPrefWidth(200);
+        startButton.setPrefHeight(30);
+        VBox.setMargin(startButton, new Insets(20, 0, 0, 0));
 
-        //The buttons in the menu
-        //The start button goes to the scene of the board (the actual game)
-        //and the exit button closes the program
-        Button startGame = new Button("Start Game");
-        Button exitGame = new Button("Exit Game");
-        startGame.setFont(new Font("Diablo Heavy", 16));
-        exitGame.setFont(new Font("Diablo Heavy", 14));
-        startGame.setTooltip(new Tooltip("Play a game of chess with another player"));
-        startGame.setOnAction(e -> primaryStage.setScene(board));
-        exitGame.setOnAction(e -> primaryStage.close());
+        Button exitButton = new Button("Exit Game");
+        exitButton.setFont(new Font("Times New Roman", 16));
+        exitButton.setPrefWidth(150);
+        exitButton.setPrefHeight(30);
+        VBox.setMargin(exitButton, new Insets(20, 0, 0, 0));
 
-        //Layout for the main menu
-        //The stack pane arranges the nodes in a stack so it was the better option
-        //The margin for both buttons is set to make them appear below the logo
-        StackPane menuLayout = new StackPane();
-        StackPane.setMargin(startGame, new Insets(120, 8, 0, 0));
-        StackPane.setMargin(exitGame, new Insets(200, 8, 0, 0));
-        menuLayout.getChildren().addAll(logoView, startGame, exitGame, chess);
-        menuLayout.setAlignment(Pos.CENTER);
+        menuLayout.getChildren().add(chessLabel);
+        menuLayout.getChildren().add(logo);
+        menuLayout.getChildren().add(startButton);
+        menuLayout.getChildren().add(exitButton);
 
-        //Scene for the menu
-        Scene menu = new Scene(menuLayout, 400, 380);
+        Scene chessBoard = new Scene(boardLayout);
+        Board board = new Board(boardLayout);
 
-        Board chessBoard = new Board(gridLayout);
-
-        gridLayout.setAlignment(Pos.TOP_CENTER);
-
-        //The stage's title and icon
-        //The stage's default scene is set to the main menu
-        primaryStage.setTitle("Chess");
-        primaryStage.getIcons().add(new Image("assets/icon.jpg"));
-        primaryStage.setScene(menu);
-        primaryStage.show();
-
-        primaryStage.setOnCloseRequest(e ->
+        startButton.setOnAction(e ->
         {
-            e.consume();
-            Scene currentScene = primaryStage.getScene();
-            if (currentScene.equals(menu))
-            {
-                AlertBox.display("menu", primaryStage, menu);
-            }
-            else if (currentScene.equals(board))
-            {
-                AlertBox.display("board", primaryStage, menu);
-            }
+            primaryStage.setScene(chessBoard);
+            board.initialize();
         });
 
+        exitButton.setOnAction(e ->
+        {
+            primaryStage.close();
+        });
+
+        primaryStage.setScene(menu);
+        primaryStage.getIcons().add(new Image("assets/b_knight_png_128px.png"));
+        primaryStage.setTitle("Chess");
+        primaryStage.setWidth(528);
+        primaryStage.setHeight(550);
+        primaryStage.setResizable(false);
+
+        primaryStage.show();
     }
 }

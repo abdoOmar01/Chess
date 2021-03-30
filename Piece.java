@@ -1,24 +1,19 @@
-import javafx.scene.Node;
+import javafx.geometry.Insets;
+import javafx.scene.Cursor;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
-
-import java.util.ArrayList;
 
 public abstract class Piece
 {
-    protected int x;
-    protected int y;
-    protected final String color;
-    protected Image pieceImage;
-    protected ImageView pieceImageView;
-    protected ArrayList<Tile> movableTiles = new ArrayList<Tile>();
-    protected final Board board;
-
-    public abstract void setMovableTiles();
+    private int x;
+    private int y;
+    private final String color;
+    private ImageView imageView;
+    private final Board board;
+    private String type;
+    private boolean isFirstMove;
+    private static int turn = 0;
 
     public Piece(int x, int y, String color, Board board)
     {
@@ -26,63 +21,89 @@ public abstract class Piece
         this.y = y;
         this.color = color;
         this.board = board;
-
-        setMovableTiles();
+        isFirstMove = true;
     }
 
-    public void move(Tile tile)
+    public void setImageView(String src)
     {
-        x = tile.getX();
-        y = tile.getY();
-        GridPane.setRowIndex(pieceImageView, x);
-        GridPane.setColumnIndex(pieceImageView, y);
-
-        setMovableTiles();
-    }
-
-    public void setPieceImage(String url)
-    {
-        pieceImage = new Image(url);
-    }
-
-    public Image getPieceImage()
-    {
-        return pieceImage;
-    }
-
-    public void setPieceImageView(Image pieceImage)
-    {
-        pieceImageView = new ImageView(pieceImage);
-        pieceImageView.setFitWidth(30);
-        pieceImageView.setFitHeight(30);
-
-        pieceImageView.setOnDragDetected(e ->
+        imageView = new ImageView(new Image(src));
+        if (type.equals("Pawn"))
         {
-            Dragboard db = pieceImageView.startDragAndDrop(TransferMode.ANY);
+            imageView.setFitWidth(32);
+            imageView.setFitHeight(40);
+            GridPane.setMargin(imageView, new Insets(0, 0, 0, 15));
+        }
+        else
+        {
+            imageView.setFitWidth(40);
+            imageView.setFitHeight(45);
+            GridPane.setMargin(imageView, new Insets(2, 0, 0, 12));
+        }
 
-            ClipboardContent content = new ClipboardContent();
-            content.putImage(pieceImage);
+        imageView.setOnMouseEntered(e ->
+        {
+            if (turn % 2 == 0 && this.color.equals("White") || turn % 2 != 0 && this.color.equals("Black"))
+            {
+                imageView.getScene().setCursor(Cursor.HAND);
+            }
+        });
 
-            db.setContent(content);
+        imageView.setOnMouseExited(e ->
+        {
+            imageView.getScene().setCursor(Cursor.DEFAULT);
+        });
 
-            e.consume();
-
+        imageView.setOnMouseClicked(e ->
+        {
+            if (turn % 2 == 0 && this.color.equals("White") || turn % 2 != 0 && this.color.equals("Black"))
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    for (int j = 0; j < 8; j++)
+                    {
+                        if (board.getTile(i, j).getIsToggled())
+                        {
+                            board.getTile(i, j).toggle();
+                        }
+                    }
+                }
+                toggleMovableTiles();
+            }
         });
     }
 
-    public ImageView getPieceImageView()
+    public abstract void toggleMovableTiles();
+
+    public void promote(int x, int y)
     {
-        return pieceImageView;
+        if (getColor().equals("White"))
+        {
+            AlertBox.display(x, y, "White", board);
+        }
+        else
+        {
+            AlertBox.display(x, y, "Black", board);
+        }
     }
 
-    public ArrayList<Tile> getMovableTiles()
+    public void move(int x, int y)
     {
-        return movableTiles;
-    }
+        GridPane.setRowIndex(imageView, x);
+        GridPane.setColumnIndex(imageView, y);
+        board.getTile(getX(), getY()).setPiece(null);
+        board.getTile(x, y).setPiece(this);
+        this.setX(x);
+        this.setY(y);
+        turn++;
+        if (this.type.equals("Pawn") && (((this.color.equals("White")) && this.x == 0) || ((this.color.equals("Black")) && this.x == 7)))
+        {
+            promote(x, y);
+        }
 
-    public String getColor()
-    {
-        return color;
+        if (isFirstMove)
+        {
+            isFirstMove = false;
+        }
     }
 
     public void setX(int x)
@@ -104,4 +125,35 @@ public abstract class Piece
     {
         return y;
     }
+
+    public ImageView getImageView()
+    {
+        return imageView;
+    }
+
+    public void setType(String type)
+    {
+        this.type = type;
+    }
+
+    public String getType()
+    {
+        return type;
+    }
+
+    public Board getBoard()
+    {
+        return board;
+    }
+
+    public String getColor()
+    {
+        return color;
+    }
+
+    public boolean getFirstMove()
+    {
+        return isFirstMove;
+    }
+
 }

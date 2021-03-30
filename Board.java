@@ -1,127 +1,115 @@
-import javafx.geometry.Insets;
 import javafx.scene.layout.GridPane;
 
 public class Board
 {
-    Tile[][] grid = new Tile[8][8];
+    private Tile[][] grid = new Tile[8][8];
+    private GridPane layout;
 
     public Board(GridPane layout)
     {
+        this.layout = layout;
+    }
+
+    public void initialize()
+    {
+        String color;
+        Piece piece;
+        char[] pieces = {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'};
+
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
             {
-                grid[i][j] = new Tile(i, j);
-
                 if ((i + j) % 2 == 0)
                 {
-                    grid[i][j].setTileImage("assets/whiteTile.jpg");
+                    color = "White";
                 }
                 else
                 {
-                    grid[i][j].setTileImage("assets/brownTile.jpg");
+                    color = "Black";
                 }
 
-                grid[i][j].setPiece(null);
-                grid[i][j].setTileImageView(grid[i][j].getTileImage());
-                layout.add(grid[i][j].getTileImageView(), j, i, 1, 1);
+                grid[i][j] = new Tile(i, j, color,this);
+                layout.add(grid[i][j].getImageView(), j, i);
             }
         }
 
-        char[][] blackPieces = {
-                {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'},
-                {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'}
-        };
-
-        char[][] whitePieces = {
-                {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'},
-                {'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'}
-        };
-
-        Piece piece;
-
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 8; i++)
         {
-            for (int j = 0; j < 8; j++)
-            {
-                if (blackPieces[i][j] == 'r')
-                {
-                    piece = new Rook(i, j, "Black", this);
-                    piece.setPieceImage("assets/rook1.png");
-                }
-                else if (blackPieces[i][j] == 'n')
-                {
-                    piece = new Knight(i, j, "Black", this);
-                    piece.setPieceImage("assets/king1.png");
-                }
-                else if (blackPieces[i][j] == 'b')
-                {
-                    piece = new Bishop(i, j, "Black", this);
-                    piece.setPieceImage("assets/bishop1.png");
-                }
-                else if (blackPieces[i][j] == 'q')
-                {
-                    piece = new Queen(i, j, "Black", this);
-                    piece.setPieceImage("assets/queen1.png");
-                }
-                else if (blackPieces[i][j] == 'k')
-                {
-                    piece = new King(i, j, "Black", this);
-                    piece.setPieceImage("assets/king1.png");
-                }
-                else
-                {
-                    piece = new Pawn(i, j, "Black", this);
-                    piece.setPieceImage("assets/pawn1.png");
-                }
-
-                grid[i][j].setPiece(piece);
-                piece.setPieceImageView(piece.getPieceImage());
-                GridPane.setMargin(piece.getPieceImageView(), new Insets(0, 0, 0, 6));
-                layout.add(piece.getPieceImageView(), j, i, 1, 1);
-            }
+            piece = new Pawn(1, i, "Black", this);
+            grid[1][i].setPiece(piece);
+            layout.add(piece.getImageView(), i, 1);
         }
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 8; i++)
         {
-            for (int j = 0; j < 8; j++)
-            {
-                if (whitePieces[i][j] == 'r')
-                {
-                    piece = new Rook(i + 6, j, "White", this);
-                    piece.setPieceImage("assets/rook.png");
-                }
-                else if (whitePieces[i][j] == 'n')
-                {
-                    piece = new Knight(i + 6, j, "White", this);
-                    piece.setPieceImage("assets/knight.png");
-                }
-                else if (whitePieces[i][j] == 'b')
-                {
-                    piece = new Bishop(i + 6, j, "White", this);
-                    piece.setPieceImage("assets/bishop.png");
-                }
-                else if (whitePieces[i][j] == 'q')
-                {
-                    piece = new Queen(i + 6, j, "White", this);
-                    piece.setPieceImage("assets/queen.png");
-                }
-                else if (whitePieces[i][j] == 'k')
-                {
-                    piece = new King(i + 6, j, "White", this);
-                    piece.setPieceImage("assets/king.png");
-                }
-                else
-                {
-                    piece = new Pawn(i + 6, j, "White", this);
-                    piece.setPieceImage("assets/pawn.png");
-                }
-
-                grid[i+6][j].setPiece(piece);
-                piece.setPieceImageView(piece.getPieceImage());
-                GridPane.setMargin(piece.getPieceImageView(), new Insets(0, 0, 0, 6));
-                layout.add(piece.getPieceImageView(), j, i + 6, 1, 1);
-            }
+            piece = new Pawn(6, i, "White", this);
+            grid[6][i].setPiece(piece);
+            layout.add(piece.getImageView(), i, 6);
         }
+
+        for (int i = 0; i < 8; i++)
+        {
+            if (pieces[i] == 'r')
+            {
+                piece = new Rook(0, i, "Black", this);
+            }
+            else if (pieces[i] == 'n')
+            {
+                piece = new Knight(0, i, "Black", this);
+            }
+            else if (pieces[i] == 'b')
+            {
+                piece = new Bishop(0, i, "Black", this);
+            }
+            else if (pieces[i] == 'q')
+            {
+                piece = new Queen(0, i, "Black", this);
+            }
+            else
+            {
+                piece = new King(0, i, "Black", this);
+            }
+
+            grid[0][i].setPiece(piece);
+            layout.add(piece.getImageView(), i, 0);
+        }
+
+        for (int i = 0; i < 8; i++)
+        {
+            if (pieces[i] == 'r')
+            {
+                piece = new Rook(7, i, "White", this);
+            }
+            else if (pieces[i] == 'n')
+            {
+                piece = new Knight(7, i, "White", this);
+            }
+            else if (pieces[i] == 'b')
+            {
+                piece = new Bishop(7, i, "White", this);
+            }
+            else if (pieces[i] == 'q')
+            {
+                piece = new Queen(7, i, "White", this);
+            }
+            else
+            {
+                piece = new King(7, i, "White", this);
+            }
+
+            grid[7][i].setPiece(piece);
+            layout.add(piece.getImageView(), i, 7);
+        }
+    }
+
+    public Tile getTile(int x, int y)
+    {
+        return grid[x][y];
+    }
+
+    public GridPane getLayout()
+    {
+        return layout;
     }
 }
